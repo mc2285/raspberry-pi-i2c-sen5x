@@ -22,7 +22,7 @@
 *.la
 *.lo
 
-# Shared objects 
+# Shared objects
 *.so
 *.so.*
 *.dylib
@@ -41,3 +41,6 @@
 
 # debug information files
 *.dwo
+
+# Pycache
+**/__pycache__
