@@ -42,10 +42,6 @@ def _setup_ctypes() -> None:
         POINTER(c_int16), POINTER(c_int16), POINTER(c_uint16)]
     libsen5x.sen5x_get_temperature_offset_parameters.restype = c_int16
 
-    libsen5x.sen5x_get_temperature_offset_simple.argtypes = [
-        POINTER(c_float)]
-    libsen5x.sen5x_get_temperature_offset_simple.restype = c_int16
-
     libsen5x.sen5x_get_version.argtypes = [POINTER(c_uint8), POINTER(c_uint8), POINTER(
         c_bool), POINTER(c_uint8), POINTER(c_uint8), POINTER(c_uint8), POINTER(c_uint8)]
     libsen5x.sen5x_get_version.restype = c_int16
@@ -78,10 +74,6 @@ def _setup_ctypes() -> None:
         c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16)]
     libsen5x.sen5x_read_measured_pm_values_as_integers.restype = c_int16
 
-    libsen5x.sen5x_read_measured_raw_values.argtypes = [
-        POINTER(c_int16), POINTER(c_int16), POINTER(c_uint16), POINTER(c_uint16)]
-    libsen5x.sen5x_read_measured_raw_values.restype = c_int16
-
     libsen5x.sen5x_read_measured_values.argtypes = [POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(
         c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float)]
     libsen5x.sen5x_read_measured_values.restype = c_int16
@@ -107,9 +99,6 @@ def _setup_ctypes() -> None:
     libsen5x.sen5x_set_temperature_offset_parameters.argtypes = [
         c_int16, c_int16, c_uint16]
     libsen5x.sen5x_set_temperature_offset_parameters.restype = c_int16
-
-    libsen5x.sen5x_set_temperature_offset_simple.argtypes = [c_float]
-    libsen5x.sen5x_set_temperature_offset_simple.restype = c_int16
 
     libsen5x.sen5x_set_voc_algorithm_state.argtypes = [
         POINTER(c_uint8), c_uint8]

@@ -38,7 +38,7 @@ async def get_version() -> str:
         raise RuntimeError("Failed to get version")
     return (
         f"FW:{fw_major.value}.{fw_minor.value}{'-debug' if fw_debug.value else ''}"
-        f"HW:{hw_major.value}.{hw_minor.value} PRT:{prt_major.value}.{prt_minor.value}"
+        f" HW:{hw_major.value}.{hw_minor.value} PRT:{prt_major.value}.{prt_minor.value}"
     )
 
 
@@ -75,6 +75,11 @@ async def stop_measurement() -> None:
 
 
 async def start_fan_cleaning() -> None:
+    # In case the docs don't make it clear (they don't), fan cleaning only
+    # works when the fan was previously started by calling start_measurement.
+    # read_data_ready will return false until the fan cleaning is complete, which takes ~10s.
+    # It is still possible to read the last (stale) dataframe during that period.
+    # The process can be aborted by calling stop_measurement
     if libsen5x.sen5x_start_fan_cleaning() < 0:
         raise RuntimeError("Failed to start fan cleaning")
     await asyncio.sleep(0.02)  # <20ms
@@ -84,7 +89,7 @@ async def get_fan_auto_cleaning_interval() -> int:
     interval = c_uint32()
     if libsen5x.sen5x_get_fan_auto_cleaning_interval(interval) < 0:
         raise RuntimeError("Failed to get fan auto cleaning interval")
-    asyncio.sleep(0.02)  # <20ms
+    await asyncio.sleep(0.02)  # <20ms
     return interval.value
 
 
@@ -93,7 +98,7 @@ async def set_fan_auto_cleaning_interval(interval: int) -> None:
         raise ValueError("Interval must fit in uint32")
     if libsen5x.sen5x_set_fan_auto_cleaning_interval(interval) < 0:
         raise RuntimeError("Failed to set fan auto cleaning interval")
-    asyncio.sleep(0.02)  # <20ms
+    await asyncio.sleep(0.02)  # <20ms
 
 
 async def read_data_ready() -> bool:
@@ -104,15 +109,165 @@ async def read_data_ready() -> bool:
 
 
 async def get_warm_start_parameter() -> bool:
-    param = c_bool()
+    param = c_uint16()
     if libsen5x.sen5x_get_warm_start_parameter(param) < 0:
         raise RuntimeError("Failed to get warm start parameter")
-    return param.value
+    return bool(param.value)
 
 
 async def set_warm_start_parameter(param: bool) -> None:
-    if libsen5x.sen5x_set_warm_start_parameter(param) < 0:
+    val = 0
+    if param:
+        val = 65535
+    if libsen5x.sen5x_set_warm_start_parameter(val) < 0:
         raise RuntimeError("Failed to set warm start parameter")
+    await asyncio.sleep(0.02)  # <20ms
+
+
+async def get_temperature_offset_parameters() -> dict:
+    offset = c_int16()
+    gain = c_int16()
+    scale = c_uint16()
+    if libsen5x.sen5x_get_temperature_offset_parameters(offset, gain, scale) < 0:
+        raise RuntimeError("Failed to get temperature offset parameters")
+    return {
+        "offset": offset.value,
+        "slope": gain.value,
+        "time_constant": scale.value
+    }
+
+
+async def get_temperature_offset_simple() -> float:
+    # Call get_temperature_offset_parameters and apply the formula to return the actual offset in degrees Celsius
+    params = await get_temperature_offset_parameters()
+    return params["offset"] / 200.0
+
+
+async def set_temperature_offset_parameters(offset: int, slope: int, time_constant: int) -> None:
+    if offset < -32768 or offset > 32767:
+        raise ValueError("Offset must fit in int16")
+    if slope < -32768 or slope > 32767:
+        raise ValueError("Slope must fit in int16")
+    if time_constant < 0 or time_constant > 0xFFFF:
+        raise ValueError("Time constant must fit in uint16")
+    if libsen5x.sen5x_set_temperature_offset_parameters(offset, slope, time_constant) < 0:
+        raise RuntimeError("Failed to set temperature offset parameters")
+    await asyncio.sleep(0.02)  # <20ms
+
+
+async def set_temperature_offset_simple(offset: float) -> None:
+    # Convert the offset in degrees Celsius to the raw parameters and call set_temperature_offset_parameters
+    raw_offset = int(offset * 200)
+    await set_temperature_offset_parameters(raw_offset, 0, 0)
+
+
+async def get_rh_t_acceleration_mode() -> int:
+    mode = c_uint16()
+    if libsen5x.sen5x_get_rht_acceleration_mode(mode) < 0:
+        raise RuntimeError("Failed to get RH/T acceleration mode")
+    return mode.value
+
+
+async def set_rh_t_acceleration_mode(mode: int) -> None:
+    if mode < 0 or mode > 2:
+        # Yes, this is not an ommission, the valid modes are 0 (low), 1 (high) and 2 (medium)
+        raise ValueError("Mode must be 0 (low), 1 (high) or 2 (medium)")
+    if libsen5x.sen5x_set_rht_acceleration_mode(mode) < 0:
+        raise RuntimeError("Failed to set RH/T acceleration mode")
+    await asyncio.sleep(0.02)  # <20ms
+
+
+async def get_voc_algorithm_tuning_parameters() -> dict:
+    index_offset = c_int16()
+    learning_time_offset_hours = c_int16()
+    learning_time_gain_hours = c_int16()
+    gating_time_max_duration_minutes = c_int16()
+    std_initial = c_int16()
+    gain_factor = c_int16()
+    if libsen5x.sen5x_get_voc_algorithm_tuning_parameters(
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ) < 0:
+        raise RuntimeError("Failed to get VOC algorithm tuning parameters")
+    return {
+        "index_offset": index_offset.value,
+        "learning_time_offset_hours": learning_time_offset_hours.value,
+        "learning_time_gain_hours": learning_time_gain_hours.value,
+        "gating_time_max_duration_minutes": gating_time_max_duration_minutes.value,
+        "std_initial": std_initial.value,
+        "gain_factor": gain_factor.value
+    }
+
+
+async def set_voc_algorithm_tuning_parameters(
+    index_offset: int, learning_time_offset_hours: int, learning_time_gain_hours: int,
+    gating_time_max_duration_minutes: int, std_initial: int, gain_factor: int
+) -> None:
+    if any(param < -32768 or param > 32767 for param in [
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ]):
+        raise ValueError("All parameters must fit in int16")
+    if libsen5x.sen5x_set_voc_algorithm_tuning_parameters(
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ) < 0:
+        raise RuntimeError("Failed to set VOC algorithm tuning parameters")
+    await asyncio.sleep(0.02)  # <20ms
+
+
+async def get_voc_algorithm_state() -> bytes:
+    state = (c_uint8 * 12)()
+    if libsen5x.sen5x_get_voc_algorithm_state(state) < 0:
+        raise RuntimeError("Failed to get VOC algorithm state")
+    return bytes(state)
+
+
+async def set_voc_algorithm_state(state: bytes) -> None:
+    if len(state) != 12:
+        raise ValueError("State must be exactly 12 bytes")
+    state_array = (c_uint8 * 12).from_buffer_copy(state)
+    if libsen5x.sen5x_set_voc_algorithm_state(state_array) < 0:
+        raise RuntimeError("Failed to set VOC algorithm state")
+    await asyncio.sleep(0.02)  # <20ms
+
+
+async def get_nox_algorithm_tuning_parameters() -> dict:
+    index_offset = c_int16()
+    learning_time_offset_hours = c_int16()
+    learning_time_gain_hours = c_int16()
+    gating_time_max_duration_minutes = c_int16()
+    std_initial = c_int16()
+    gain_factor = c_int16()
+    if libsen5x.sen5x_get_nox_algorithm_tuning_parameters(
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ) < 0:
+        raise RuntimeError("Failed to get NOx algorithm tuning parameters")
+    return {
+        "index_offset": index_offset.value,
+        "learning_time_offset_hours": learning_time_offset_hours.value,
+        "learning_time_gain_hours": learning_time_gain_hours.value,
+        "gating_time_max_duration_minutes": gating_time_max_duration_minutes.value,
+        "std_initial": std_initial.value,
+        "gain_factor": gain_factor.value
+    }
+
+
+async def set_nox_algorithm_tuning_parameters(
+    index_offset: int, learning_time_offset_hours: int, learning_time_gain_hours: int,
+    gating_time_max_duration_minutes: int, std_initial: int, gain_factor: int
+) -> None:
+    if any(param < -32768 or param > 32767 for param in [
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ]):
+        raise ValueError("All parameters must fit in int16")
+    if libsen5x.sen5x_set_nox_algorithm_tuning_parameters(
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ) < 0:
+        raise RuntimeError("Failed to set NOx algorithm tuning parameters")
     await asyncio.sleep(0.02)  # <20ms
 
 
