@@ -57,26 +57,39 @@ static uint8_t i2c_address = 0;
 /**
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
+ *
+ * @returns descriptor number on succes, -1 on failure
  */
-void sensirion_i2c_hal_init(const char* device_path) {
+int sensirion_i2c_hal_init(const char* device_path) {
     /* open i2c adapter */
-    i2c_device = open(device_path, O_RDWR);
-    if (i2c_device == -1)
-        return; /* no error handling */
+    if (i2c_device < 0) {
+        i2c_device = open(device_path, O_RDWR);
+    }
+    return i2c_device;
 }
 
 /**
  * Release all resources initialized by sensirion_i2c_hal_init().
+ *
+ * @returns 0 on succes, -1 on failure
  */
-void sensirion_i2c_hal_free(void) {
+int sensirion_i2c_hal_free(void) {
     if (i2c_device >= 0)
-        close(i2c_device);
+        return close(i2c_device);
+    return 0;
 }
 
 /**
- * Execute one read transaction on the I2C bus, reading a given number of bytes.
- * If the device does not acknowledge the read command, an error shall be
- * returned.
+ * @returns the device descriptor of the I2C interface (-1 if not setup)
+ */
+int sensirion_i2c_get_descriptor(void) {
+    return i2c_device;
+}
+
+/**
+ * Execute one read transaction on the I2C bus, reading a given number of
+ * bytes. If the device does not acknowledge the read command, an error
+ * shall be returned.
  *
  * @param address 7-bit I2C address to read from
  * @param data    pointer to the buffer where the data is to be stored

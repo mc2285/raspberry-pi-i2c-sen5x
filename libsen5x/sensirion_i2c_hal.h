@@ -53,13 +53,22 @@ int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx);
 /**
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
+ *
+ * @returns descriptor number on succes, -1 on failure
  */
-void sensirion_i2c_hal_init(const char* device_path) SEN5X_EXPORTED;
+int sensirion_i2c_hal_init(const char* device_path) SEN5X_EXPORTED;
 
 /**
  * Release all resources initialized by sensirion_i2c_hal_init().
+ *
+ * @returns 0 on succes, -1 on failure
  */
-void sensirion_i2c_hal_free(void) SEN5X_EXPORTED;
+int sensirion_i2c_hal_free(void) SEN5X_EXPORTED;
+
+/**
+ * @returns the device descriptor of the I2C interface (-1 if not setup)
+ */
+int sensirion_i2c_get_descriptor(void) SEN5X_EXPORTED;
 
 /**
  * Execute one read transaction on the I2C bus, reading a given number of bytes.
