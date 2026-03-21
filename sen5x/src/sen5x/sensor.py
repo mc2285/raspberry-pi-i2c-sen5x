@@ -89,7 +89,6 @@ async def get_fan_auto_cleaning_interval() -> int:
     interval = c_uint32()
     if libsen5x.sen5x_get_fan_auto_cleaning_interval(interval) < 0:
         raise RuntimeError("Failed to get fan auto cleaning interval")
-    await asyncio.sleep(0.02)  # <20ms
     return interval.value
 
 
@@ -203,11 +202,20 @@ async def set_voc_algorithm_tuning_parameters(
     index_offset: int, learning_time_offset_hours: int, learning_time_gain_hours: int,
     gating_time_max_duration_minutes: int, std_initial: int, gain_factor: int
 ) -> None:
-    if any(param < -32768 or param > 32767 for param in [
-        index_offset, learning_time_offset_hours, learning_time_gain_hours,
-        gating_time_max_duration_minutes, std_initial, gain_factor
-    ]):
-        raise ValueError("All parameters must fit in int16")
+    if index_offset < 1 or index_offset > 250:
+        raise ValueError("Index offset must be between 1 and 250")
+    if learning_time_offset_hours < 1 or learning_time_offset_hours > 1000:
+        raise ValueError(
+            "Learning time offset hours must be between 1 and 1000")
+    if learning_time_gain_hours < 1 or learning_time_gain_hours > 1000:
+        raise ValueError("Learning time gain hours must be between 1 and 1000")
+    if gating_time_max_duration_minutes < 0 or gating_time_max_duration_minutes > 3000:
+        raise ValueError(
+            "Gating time max duration minutes must be between 0 and 3000")
+    if std_initial < 10 or std_initial > 5000:
+        raise ValueError("Std initial must be between 10 and 5000")
+    if gain_factor < 1 or gain_factor > 1000:
+        raise ValueError("Gain factor must be between 1 and 1000")
     if libsen5x.sen5x_set_voc_algorithm_tuning_parameters(
         index_offset, learning_time_offset_hours, learning_time_gain_hours,
         gating_time_max_duration_minutes, std_initial, gain_factor
@@ -218,7 +226,7 @@ async def set_voc_algorithm_tuning_parameters(
 
 async def get_voc_algorithm_state() -> bytes:
     state = (c_uint8 * 12)()
-    if libsen5x.sen5x_get_voc_algorithm_state(state) < 0:
+    if libsen5x.sen5x_get_voc_algorithm_state(state, 12) < 0:
         raise RuntimeError("Failed to get VOC algorithm state")
     return bytes(state)
 
@@ -227,7 +235,7 @@ async def set_voc_algorithm_state(state: bytes) -> None:
     if len(state) != 12:
         raise ValueError("State must be exactly 12 bytes")
     state_array = (c_uint8 * 12).from_buffer_copy(state)
-    if libsen5x.sen5x_set_voc_algorithm_state(state_array) < 0:
+    if libsen5x.sen5x_set_voc_algorithm_state(state_array, 12) < 0:
         raise RuntimeError("Failed to set VOC algorithm state")
     await asyncio.sleep(0.02)  # <20ms
 
@@ -258,11 +266,21 @@ async def set_nox_algorithm_tuning_parameters(
     index_offset: int, learning_time_offset_hours: int, learning_time_gain_hours: int,
     gating_time_max_duration_minutes: int, std_initial: int, gain_factor: int
 ) -> None:
-    if any(param < -32768 or param > 32767 for param in [
-        index_offset, learning_time_offset_hours, learning_time_gain_hours,
-        gating_time_max_duration_minutes, std_initial, gain_factor
-    ]):
-        raise ValueError("All parameters must fit in int16")
+    if index_offset < 1 or index_offset > 250:
+        raise ValueError("Index offset must be between 1 and 250")
+    if learning_time_offset_hours < 1 or learning_time_offset_hours > 1000:
+        raise ValueError(
+            "Learning time offset hours must be between 1 and 1000")
+    if learning_time_gain_hours != 12:
+        raise ValueError("This value is a placeholder, do not change")
+    if gating_time_max_duration_minutes < 0 or gating_time_max_duration_minutes > 3000:
+        raise ValueError(
+            "Gating time max duration minutes must be between 0 and 3000")
+    if std_initial != 50:
+        raise ValueError("This value is a placeholder, do not change")
+    if gain_factor < 1 or gain_factor > 1000:
+        raise ValueError("Gain factor must be between 1 and 1000")
+
     if libsen5x.sen5x_set_nox_algorithm_tuning_parameters(
         index_offset, learning_time_offset_hours, learning_time_gain_hours,
         gating_time_max_duration_minutes, std_initial, gain_factor
