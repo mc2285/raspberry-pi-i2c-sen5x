@@ -10,13 +10,17 @@ ifdef CI
     CFLAGS += -Werror
 endif
 
-.PHONY: all clean
+.PHONY: all clean install
 
 all: libsen5x.so
 
 libsen5x.so: *.c *.h
 	$(CC) $(CFLAGS) -o $@  ${sen5x_sources} ${i2c_sources} \
 		${i2c_implementation} ${common_sources}
+
+install: libsen5x.so
+	cp libsen5x.so /usr/local/lib/
+	ldconfig
 
 clean:
 	$(RM) libsen5x.so

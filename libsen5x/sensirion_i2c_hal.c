@@ -56,7 +56,7 @@ static uint8_t i2c_address = 0;
 
 /**
  * Initialize all hard- and software components that are needed for the I2C
- * communication.
+ * communication. Does nothing if a descriptor has been already acquired.
  *
  * @returns descriptor number on succes, -1 on failure
  */
