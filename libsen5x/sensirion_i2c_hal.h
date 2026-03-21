@@ -52,7 +52,8 @@ int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx);
 
 /**
  * Initialize all hard- and software components that are needed for the I2C
- * communication. Does nothing if a descriptor has been already acquired.
+ * communication. Closes the previous descriptor if one has been already
+ * acquired.
  *
  * @returns descriptor number on succes, -1 on failure
  */

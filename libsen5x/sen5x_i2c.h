@@ -749,7 +749,7 @@ int16_t sen5x_get_fan_auto_cleaning_interval(uint32_t* interval) SEN5X_EXPORTED;
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_product_name(unsigned char* product_name,
+int16_t sen5x_get_product_name(uint8_t* product_name,
                                uint8_t product_name_size) SEN5X_EXPORTED;
 
 /**
@@ -760,7 +760,7 @@ int16_t sen5x_get_product_name(unsigned char* product_name,
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_serial_number(unsigned char* serial_number,
+int16_t sen5x_get_serial_number(uint8_t* serial_number,
                                 uint8_t serial_number_size) SEN5X_EXPORTED;
 
 /**

@@ -37,7 +37,6 @@
 #include "sensirion_config.h"
 
 #include <fcntl.h>
-#include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -56,15 +55,18 @@ static uint8_t i2c_address = 0;
 
 /**
  * Initialize all hard- and software components that are needed for the I2C
- * communication. Does nothing if a descriptor has been already acquired.
+ * communication. Closes the previous descriptor if one has been already
+ * acquired.
  *
  * @returns descriptor number on succes, -1 on failure
  */
 int sensirion_i2c_hal_init(const char* device_path) {
-    /* open i2c adapter */
-    if (i2c_device < 0) {
-        i2c_device = open(device_path, O_RDWR);
+    if (i2c_device >= 0) {
+        close(i2c_device);
+        i2c_device = -1;
     }
+    /* open i2c adapter */
+    i2c_device = open(device_path, O_RDWR);
     return i2c_device;
 }
 
@@ -74,8 +76,11 @@ int sensirion_i2c_hal_init(const char* device_path) {
  * @returns 0 on succes, -1 on failure
  */
 int sensirion_i2c_hal_free(void) {
-    if (i2c_device >= 0)
-        return close(i2c_device);
+    if (i2c_device >= 0) {
+        int res = close(i2c_device);
+        i2c_device = -1;
+        return res;
+    }
     return 0;
 }
 

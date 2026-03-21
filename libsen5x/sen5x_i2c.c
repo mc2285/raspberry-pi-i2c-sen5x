@@ -41,6 +41,8 @@
 #include "sensirion_i2c.h"
 #include "sensirion_i2c_hal.h"
 #include <math.h>  // NAN
+#include <stdint.h>
+#include <string.h>
 
 #define SEN5X_I2C_ADDRESS 0x69
 
@@ -57,7 +59,7 @@ int16_t sen5x_start_measurement(void) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(50000);
+    // sensirion_i2c_hal_sleep_usec(50000);
     return NO_ERROR;
 }
 
@@ -71,7 +73,7 @@ int16_t sen5x_start_measurement_without_pm(void) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(50000);
+    // sensirion_i2c_hal_sleep_usec(50000);
     return NO_ERROR;
 }
 
@@ -85,7 +87,7 @@ int16_t sen5x_stop_measurement(void) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(200000);
+    // sensirion_i2c_hal_sleep_usec(200000);
     return NO_ERROR;
 }
 
@@ -355,7 +357,7 @@ int16_t sen5x_start_fan_cleaning(void) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -402,7 +404,7 @@ int16_t sen5x_set_temperature_offset_parameters(int16_t temp_offset,
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -444,7 +446,7 @@ int16_t sen5x_set_warm_start_parameter(uint16_t warm_start) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -495,7 +497,7 @@ int16_t sen5x_set_voc_algorithm_tuning_parameters(
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -555,7 +557,7 @@ int16_t sen5x_set_nox_algorithm_tuning_parameters(
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -601,7 +603,7 @@ int16_t sen5x_set_rht_acceleration_mode(uint16_t mode) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -640,7 +642,7 @@ int16_t sen5x_set_voc_algorithm_state(const uint8_t* state,
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -661,7 +663,7 @@ int16_t sen5x_get_voc_algorithm_state(uint8_t* state, uint8_t state_size) {
     if (error) {
         return error;
     }
-    sensirion_common_copy_bytes(&buffer[0], state, state_size);
+    memcpy(state, &buffer[0], state_size);
     return NO_ERROR;
 }
 
@@ -677,7 +679,7 @@ int16_t sen5x_set_fan_auto_cleaning_interval(uint32_t interval) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(20000);
+    // sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }
 
@@ -702,7 +704,7 @@ int16_t sen5x_get_fan_auto_cleaning_interval(uint32_t* interval) {
     return NO_ERROR;
 }
 
-int16_t sen5x_get_product_name(unsigned char* product_name,
+int16_t sen5x_get_product_name(uint8_t* product_name,
                                uint8_t product_name_size) {
     int16_t error;
     uint8_t buffer[48];
@@ -720,11 +722,11 @@ int16_t sen5x_get_product_name(unsigned char* product_name,
     if (error) {
         return error;
     }
-    sensirion_common_copy_bytes(&buffer[0], product_name, product_name_size);
+    memcpy(product_name, &buffer[0], product_name_size);
     return NO_ERROR;
 }
 
-int16_t sen5x_get_serial_number(unsigned char* serial_number,
+int16_t sen5x_get_serial_number(uint8_t* serial_number,
                                 uint8_t serial_number_size) {
     int16_t error;
     uint8_t buffer[48];
@@ -742,7 +744,7 @@ int16_t sen5x_get_serial_number(unsigned char* serial_number,
     if (error) {
         return error;
     }
-    sensirion_common_copy_bytes(&buffer[0], serial_number, serial_number_size);
+    memcpy(serial_number, &buffer[0], serial_number_size);
     return NO_ERROR;
 }
 
@@ -828,6 +830,6 @@ int16_t sen5x_device_reset(void) {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(200000);
+    // sensirion_i2c_hal_sleep_usec(200000);
     return NO_ERROR;
 }
