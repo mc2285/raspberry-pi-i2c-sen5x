@@ -59,6 +59,7 @@ int main(void) {
     sensirion_i2c_hal_init(I2C_DEVICE_PATH);
 
     error = sen5x_device_reset();
+    sensirion_i2c_hal_sleep_usec(200000);
     if (error) {
         printf("Error executing sen5x_device_reset(): %i\n", error);
     }
