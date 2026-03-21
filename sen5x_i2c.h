@@ -60,7 +60,7 @@ extern "C" {
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_start_measurement(void);
+int16_t sen5x_start_measurement(void) SEN5X_EXPORTED;
 
 /**
  * sen5x_start_measurement_without_pm() - Starts a continuous measurement
@@ -81,7 +81,7 @@ int16_t sen5x_start_measurement(void);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_start_measurement_without_pm(void);
+int16_t sen5x_start_measurement_without_pm(void) SEN5X_EXPORTED;
 
 /**
  * sen5x_stop_measurement() - Stops the measurement and returns to idle mode.
@@ -90,7 +90,7 @@ int16_t sen5x_start_measurement_without_pm(void);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_stop_measurement(void);
+int16_t sen5x_stop_measurement(void) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_data_ready() - This command can be used to check if new
@@ -110,7 +110,7 @@ int16_t sen5x_stop_measurement(void);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_read_data_ready(bool* data_ready);
+int16_t sen5x_read_data_ready(bool* data_ready) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_measured_values() - Returns the measured values.
@@ -155,7 +155,7 @@ int16_t sen5x_read_measured_values(float* mass_concentration_pm1p0,
                                    float* mass_concentration_pm10p0,
                                    float* ambient_humidity,
                                    float* ambient_temperature, float* voc_index,
-                                   float* nox_index);
+                                   float* nox_index) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_measured_values_as_integers() - Returns the measured values
@@ -205,7 +205,7 @@ int16_t sen5x_read_measured_values_as_integers(
     uint16_t* mass_concentration_pm1p0, uint16_t* mass_concentration_pm2p5,
     uint16_t* mass_concentration_pm4p0, uint16_t* mass_concentration_pm10p0,
     int16_t* ambient_humidity, int16_t* ambient_temperature, int16_t* voc_index,
-    int16_t* nox_index);
+    int16_t* nox_index) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_measured_raw_values() - Returns the measured raw values.
@@ -235,7 +235,8 @@ int16_t sen5x_read_measured_values_as_integers(
  */
 int16_t sen5x_read_measured_raw_values(int16_t* raw_humidity,
                                        int16_t* raw_temperature,
-                                       uint16_t* raw_voc, uint16_t* raw_nox);
+                                       uint16_t* raw_voc,
+                                       uint16_t* raw_nox) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_measured_values_sen50() - Returns the measured values for SEN50.
@@ -260,10 +261,10 @@ int16_t sen5x_read_measured_raw_values(int16_t* raw_humidity,
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_read_measured_values_sen50(float* mass_concentration_pm1p0,
-                                         float* mass_concentration_pm2p5,
-                                         float* mass_concentration_pm4p0,
-                                         float* mass_concentration_pm10p0);
+int16_t sen5x_read_measured_values_sen50(
+    float* mass_concentration_pm1p0, float* mass_concentration_pm2p5,
+    float* mass_concentration_pm4p0,
+    float* mass_concentration_pm10p0) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_measured_pm_values() - Returns the measured particulate
@@ -312,7 +313,8 @@ int16_t sen5x_read_measured_pm_values(
     float* mass_concentration_pm4p0, float* mass_concentration_pm10p0,
     float* number_concentration_pm0p5, float* number_concentration_pm1p0,
     float* number_concentration_pm2p5, float* number_concentration_pm4p0,
-    float* number_concentration_pm10p0, float* typical_particle_size);
+    float* number_concentration_pm10p0,
+    float* typical_particle_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_measured_pm_values_as_integers() - Returns the measured
@@ -371,7 +373,8 @@ int16_t sen5x_read_measured_pm_values_as_integers(
     uint16_t* mass_concentration_pm4p0, uint16_t* mass_concentration_pm10p0,
     uint16_t* number_concentration_pm0p5, uint16_t* number_concentration_pm1p0,
     uint16_t* number_concentration_pm2p5, uint16_t* number_concentration_pm4p0,
-    uint16_t* number_concentration_pm10p0, uint16_t* typical_particle_size);
+    uint16_t* number_concentration_pm10p0,
+    uint16_t* typical_particle_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_start_fan_cleaning() - Starts the fan cleaning manually. The \"data
@@ -392,7 +395,7 @@ int16_t sen5x_read_measured_pm_values_as_integers(
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_start_fan_cleaning(void);
+int16_t sen5x_start_fan_cleaning(void) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_temperature_offset_simple() - Sets the temperature offset parameter
@@ -404,7 +407,7 @@ int16_t sen5x_start_fan_cleaning(void);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_set_temperature_offset_simple(float temp_offset);
+int16_t sen5x_set_temperature_offset_simple(float temp_offset) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_temperature_offset_simple() - Gets the temperature offset parameter
@@ -418,7 +421,7 @@ int16_t sen5x_set_temperature_offset_simple(float temp_offset);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_temperature_offset_simple(float* temp_offset);
+int16_t sen5x_get_temperature_offset_simple(float* temp_offset) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_temperature_offset_parameters() - Sets the temperature offset
@@ -439,9 +442,9 @@ int16_t sen5x_get_temperature_offset_simple(float* temp_offset);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_set_temperature_offset_parameters(int16_t temp_offset,
-                                                int16_t slope,
-                                                uint16_t time_constant);
+int16_t
+sen5x_set_temperature_offset_parameters(int16_t temp_offset, int16_t slope,
+                                        uint16_t time_constant) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_temperature_offset_parameters() - Gets the temperature offset
@@ -461,9 +464,9 @@ int16_t sen5x_set_temperature_offset_parameters(int16_t temp_offset,
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_temperature_offset_parameters(int16_t* temp_offset,
-                                                int16_t* slope,
-                                                uint16_t* time_constant);
+int16_t
+sen5x_get_temperature_offset_parameters(int16_t* temp_offset, int16_t* slope,
+                                        uint16_t* time_constant) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_warm_start_parameter() - Sets the warm start parameter for the
@@ -482,7 +485,7 @@ int16_t sen5x_get_temperature_offset_parameters(int16_t* temp_offset,
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_set_warm_start_parameter(uint16_t warm_start);
+int16_t sen5x_set_warm_start_parameter(uint16_t warm_start) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_warm_start_parameter() - Gets the warm start parameter from the
@@ -495,7 +498,7 @@ int16_t sen5x_set_warm_start_parameter(uint16_t warm_start);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_warm_start_parameter(uint16_t* warm_start);
+int16_t sen5x_get_warm_start_parameter(uint16_t* warm_start) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_voc_algorithm_tuning_parameters() - Sets the tuning parameters of
@@ -538,7 +541,7 @@ int16_t sen5x_get_warm_start_parameter(uint16_t* warm_start);
 int16_t sen5x_set_voc_algorithm_tuning_parameters(
     int16_t index_offset, int16_t learning_time_offset_hours,
     int16_t learning_time_gain_hours, int16_t gating_max_duration_minutes,
-    int16_t std_initial, int16_t gain_factor);
+    int16_t std_initial, int16_t gain_factor) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_voc_algorithm_tuning_parameters() - Gets the currently set tuning
@@ -571,7 +574,7 @@ int16_t sen5x_set_voc_algorithm_tuning_parameters(
 int16_t sen5x_get_voc_algorithm_tuning_parameters(
     int16_t* index_offset, int16_t* learning_time_offset_hours,
     int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
-    int16_t* std_initial, int16_t* gain_factor);
+    int16_t* std_initial, int16_t* gain_factor) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_nox_algorithm_tuning_parameters() - Sets the tuning parameters of
@@ -614,7 +617,7 @@ int16_t sen5x_get_voc_algorithm_tuning_parameters(
 int16_t sen5x_set_nox_algorithm_tuning_parameters(
     int16_t index_offset, int16_t learning_time_offset_hours,
     int16_t learning_time_gain_hours, int16_t gating_max_duration_minutes,
-    int16_t std_initial, int16_t gain_factor);
+    int16_t std_initial, int16_t gain_factor) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_nox_algorithm_tuning_parameters() - Gets the currently set tuning
@@ -648,7 +651,7 @@ int16_t sen5x_set_nox_algorithm_tuning_parameters(
 int16_t sen5x_get_nox_algorithm_tuning_parameters(
     int16_t* index_offset, int16_t* learning_time_offset_hours,
     int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
-    int16_t* std_initial, int16_t* gain_factor);
+    int16_t* std_initial, int16_t* gain_factor) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_rht_acceleration_mode() - Sets the RH/T acceleration mode.
@@ -665,7 +668,7 @@ int16_t sen5x_get_nox_algorithm_tuning_parameters(
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_set_rht_acceleration_mode(uint16_t mode);
+int16_t sen5x_set_rht_acceleration_mode(uint16_t mode) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_rht_acceleration_mode() - Gets the RH/T acceleration mode.
@@ -676,7 +679,7 @@ int16_t sen5x_set_rht_acceleration_mode(uint16_t mode);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_rht_acceleration_mode(uint16_t* mode);
+int16_t sen5x_get_rht_acceleration_mode(uint16_t* mode) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_voc_algorithm_state() - Sets the VOC algorithm state previously
@@ -693,7 +696,8 @@ int16_t sen5x_get_rht_acceleration_mode(uint16_t* mode);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_set_voc_algorithm_state(const uint8_t* state, uint8_t state_size);
+int16_t sen5x_set_voc_algorithm_state(const uint8_t* state,
+                                      uint8_t state_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_voc_algorithm_state() - Gets the current VOC algorithm state. This
@@ -712,7 +716,8 @@ int16_t sen5x_set_voc_algorithm_state(const uint8_t* state, uint8_t state_size);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_voc_algorithm_state(uint8_t* state, uint8_t state_size);
+int16_t sen5x_get_voc_algorithm_state(uint8_t* state,
+                                      uint8_t state_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_fan_auto_cleaning_interval() - Sets the fan auto cleaning interval
@@ -723,7 +728,7 @@ int16_t sen5x_get_voc_algorithm_state(uint8_t* state, uint8_t state_size);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_set_fan_auto_cleaning_interval(uint32_t interval);
+int16_t sen5x_set_fan_auto_cleaning_interval(uint32_t interval) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_fan_auto_cleaning_interval() - Gets the fan auto cleaning interval
@@ -734,7 +739,7 @@ int16_t sen5x_set_fan_auto_cleaning_interval(uint32_t interval);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_get_fan_auto_cleaning_interval(uint32_t* interval);
+int16_t sen5x_get_fan_auto_cleaning_interval(uint32_t* interval) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_product_name() - Gets the product name from the device.
@@ -745,7 +750,7 @@ int16_t sen5x_get_fan_auto_cleaning_interval(uint32_t* interval);
  * @return 0 on success, an error code otherwise
  */
 int16_t sen5x_get_product_name(unsigned char* product_name,
-                               uint8_t product_name_size);
+                               uint8_t product_name_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_serial_number() - Gets the serial number from the device.
@@ -756,7 +761,7 @@ int16_t sen5x_get_product_name(unsigned char* product_name,
  * @return 0 on success, an error code otherwise
  */
 int16_t sen5x_get_serial_number(unsigned char* serial_number,
-                                uint8_t serial_number_size);
+                                uint8_t serial_number_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_get_version() - Gets the version information for the hardware, firmware
@@ -784,7 +789,7 @@ int16_t sen5x_get_serial_number(unsigned char* serial_number,
 int16_t sen5x_get_version(uint8_t* firmware_major, uint8_t* firmware_minor,
                           bool* firmware_debug, uint8_t* hardware_major,
                           uint8_t* hardware_minor, uint8_t* protocol_major,
-                          uint8_t* protocol_minor);
+                          uint8_t* protocol_minor) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_device_status() - Reads the current device status.
@@ -807,7 +812,7 @@ int16_t sen5x_get_version(uint8_t* firmware_major, uint8_t* firmware_minor,
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_read_device_status(uint32_t* device_status);
+int16_t sen5x_read_device_status(uint32_t* device_status) SEN5X_EXPORTED;
 
 /**
  * sen5x_read_and_clear_device_status() - Reads the current device status (like
@@ -819,7 +824,8 @@ int16_t sen5x_read_device_status(uint32_t* device_status);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_read_and_clear_device_status(uint32_t* device_status);
+int16_t
+sen5x_read_and_clear_device_status(uint32_t* device_status) SEN5X_EXPORTED;
 
 /**
  * sen5x_device_reset() - Executes a reset on the device. This has the same
@@ -827,7 +833,7 @@ int16_t sen5x_read_and_clear_device_status(uint32_t* device_status);
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t sen5x_device_reset(void);
+int16_t sen5x_device_reset(void) SEN5X_EXPORTED;
 
 #ifdef __cplusplus
 }

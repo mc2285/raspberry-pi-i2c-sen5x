@@ -54,12 +54,12 @@ int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx);
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
  */
-void sensirion_i2c_hal_init(const char* device_path);
+void sensirion_i2c_hal_init(const char* device_path) SEN5X_EXPORTED;
 
 /**
  * Release all resources initialized by sensirion_i2c_hal_init().
  */
-void sensirion_i2c_hal_free(void);
+void sensirion_i2c_hal_free(void) SEN5X_EXPORTED;
 
 /**
  * Execute one read transaction on the I2C bus, reading a given number of bytes.
