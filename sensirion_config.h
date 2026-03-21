@@ -32,6 +32,8 @@
 #ifndef SENSIRION_CONFIG_H
 #define SENSIRION_CONFIG_H
 
+#define SEN5X_EXPORTED __attribute__((__visibility__("default")))
+
 /**
  * If your platform does not provide the library stdlib.h you have to remove the
  * include and define NULL yourself (see below).
