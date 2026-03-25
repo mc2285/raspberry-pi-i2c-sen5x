@@ -633,6 +633,11 @@ int16_t sen5x_get_voc_algorithm_tuning_parameters(
     int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
     int16_t* std_initial, int16_t* gain_factor) SEN5X_EXPORTED;
 
+int16_t sen5x_get_voc_algorithm_tuning_parameters_finish(
+    int16_t* index_offset, int16_t* learning_time_offset_hours,
+    int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
+    int16_t* std_initial, int16_t* gain_factor) SEN5X_EXPORTED;
+
 /**
  * sen5x_set_nox_algorithm_tuning_parameters() - Sets the tuning parameters of
  * the NOx algorithm.
@@ -710,6 +715,11 @@ int16_t sen5x_get_nox_algorithm_tuning_parameters(
     int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
     int16_t* std_initial, int16_t* gain_factor) SEN5X_EXPORTED;
 
+int16_t sen5x_get_nox_algorithm_tuning_parameters_finish(
+    int16_t* index_offset, int16_t* learning_time_offset_hours,
+    int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
+    int16_t* std_initial, int16_t* gain_factor) SEN5X_EXPORTED;
+
 /**
  * sen5x_set_rht_acceleration_mode() - Sets the RH/T acceleration mode.
  *
@@ -737,6 +747,10 @@ int16_t sen5x_set_rht_acceleration_mode(uint16_t mode) SEN5X_EXPORTED;
  * @return 0 on success, an error code otherwise
  */
 int16_t sen5x_get_rht_acceleration_mode(uint16_t* mode) SEN5X_EXPORTED;
+/*
+ * delay 20 ms before call
+ */
+int16_t sen5x_get_rht_acceleration_mode_finish(uint16_t* mode) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_voc_algorithm_state() - Sets the VOC algorithm state previously
@@ -775,6 +789,11 @@ int16_t sen5x_set_voc_algorithm_state(const uint8_t* state,
  */
 int16_t sen5x_get_voc_algorithm_state(uint8_t* state,
                                       uint8_t state_size) SEN5X_EXPORTED;
+/*
+ * delay 20 ms before call
+ */
+int16_t sen5x_get_voc_algorithm_state_finish(uint8_t* state,
+                                             uint8_t state_size) SEN5X_EXPORTED;
 
 /**
  * sen5x_set_fan_auto_cleaning_interval() - Sets the fan auto cleaning interval

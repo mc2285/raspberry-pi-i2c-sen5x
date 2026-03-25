@@ -791,7 +791,30 @@ int16_t sen5x_get_voc_algorithm_tuning_parameters(
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0],
+    // 12); if (error) {
+    //     return error;
+    // }
+    // *index_offset = sensirion_common_bytes_to_int16_t(&buffer[0]);
+    // *learning_time_offset_hours =
+    // sensirion_common_bytes_to_int16_t(&buffer[2]); *learning_time_gain_hours
+    // = sensirion_common_bytes_to_int16_t(&buffer[4]);
+    // *gating_max_duration_minutes =
+    //     sensirion_common_bytes_to_int16_t(&buffer[6]);
+    // *std_initial = sensirion_common_bytes_to_int16_t(&buffer[8]);
+    // *gain_factor = sensirion_common_bytes_to_int16_t(&buffer[10]);
+    // return NO_ERROR;
+}
+
+int16_t sen5x_get_voc_algorithm_tuning_parameters_finish(
+    int16_t* index_offset, int16_t* learning_time_offset_hours,
+    int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
+    int16_t* std_initial, int16_t* gain_factor) {
+    int16_t error;
+    uint8_t buffer[18];
 
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 12);
     if (error) {
@@ -811,6 +834,7 @@ int16_t sen5x_set_nox_algorithm_tuning_parameters(
     int16_t index_offset, int16_t learning_time_offset_hours,
     int16_t learning_time_gain_hours, int16_t gating_max_duration_minutes,
     int16_t std_initial, int16_t gain_factor) {
+
     int16_t error;
     uint8_t buffer[20];
     uint16_t offset = 0;
@@ -851,7 +875,31 @@ int16_t sen5x_get_nox_algorithm_tuning_parameters(
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // sensirion_i2c_hal_sleep_usec(20000);
+
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0],
+    // 12); if (error) {
+    //     return error;
+    // }
+    // *index_offset = sensirion_common_bytes_to_int16_t(&buffer[0]);
+    // *learning_time_offset_hours =
+    // sensirion_common_bytes_to_int16_t(&buffer[2]); *learning_time_gain_hours
+    // = sensirion_common_bytes_to_int16_t(&buffer[4]);
+    // *gating_max_duration_minutes =
+    //     sensirion_common_bytes_to_int16_t(&buffer[6]);
+    // *std_initial = sensirion_common_bytes_to_int16_t(&buffer[8]);
+    // *gain_factor = sensirion_common_bytes_to_int16_t(&buffer[10]);
+    // return NO_ERROR;
+}
+
+int16_t sen5x_get_nox_algorithm_tuning_parameters_finish(
+    int16_t* index_offset, int16_t* learning_time_offset_hours,
+    int16_t* learning_time_gain_hours, int16_t* gating_max_duration_minutes,
+    int16_t* std_initial, int16_t* gain_factor) {
+
+    int16_t error;
+    uint8_t buffer[18];
 
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 12);
     if (error) {
@@ -894,8 +942,20 @@ int16_t sen5x_get_rht_acceleration_mode(uint16_t* mode) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 2); if (error) {
+    //     return error;
+    // }
+    // *mode = sensirion_common_bytes_to_uint16_t(&buffer[0]);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_rht_acceleration_mode_finish(uint16_t* mode) {
+    int16_t error;
+    uint8_t buffer[3];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 2);
     if (error) {
         return error;
@@ -933,8 +993,21 @@ int16_t sen5x_get_voc_algorithm_state(uint8_t* state, uint8_t state_size) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 8); if (error) {
+    //     return error;
+    // }
+    // memcpy(state, &buffer[0], state_size);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_voc_algorithm_state_finish(uint8_t* state,
+                                             uint8_t state_size) {
+    int16_t error;
+    uint8_t buffer[12];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 8);
     if (error) {
         return error;

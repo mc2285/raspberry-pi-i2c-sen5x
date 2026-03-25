@@ -200,15 +200,24 @@ async def set_temperature_offset_simple(offset: float) -> None:
 
 
 async def get_rh_t_acceleration_mode() -> int:
+    _error = RuntimeError("Failed to get RH/T acceleration mode")
     mode = c_uint16()
     if libsen5x.sen5x_get_rht_acceleration_mode(mode) < 0:
-        raise RuntimeError("Failed to get RH/T acceleration mode")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_rht_acceleration_mode_finish(mode) < 0:
+        raise _error
     return mode.value
 
 
 async def set_rh_t_acceleration_mode(mode: int) -> None:
+    """
+    Call before staring measurement. Adjusts how quickly does the
+    sensor respond to RH/Temperature changes in exchange for accuracy
+
+    @param mode: the valid modes are 0 (low), 1 (high) and 2 (medium)
+    """
     if mode < 0 or mode > 2:
-        # Yes, this is not an ommission, the valid modes are 0 (low), 1 (high) and 2 (medium)
         raise ValueError("Mode must be 0 (low), 1 (high) or 2 (medium)")
     if libsen5x.sen5x_set_rht_acceleration_mode(mode) < 0:
         raise RuntimeError("Failed to set RH/T acceleration mode")
@@ -216,6 +225,7 @@ async def set_rh_t_acceleration_mode(mode: int) -> None:
 
 
 async def get_voc_algorithm_tuning_parameters() -> dict:
+    _error = RuntimeError("Failed to get VOC algorithm tuning parameters")
     index_offset = c_int16()
     learning_time_offset_hours = c_int16()
     learning_time_gain_hours = c_int16()
@@ -226,7 +236,13 @@ async def get_voc_algorithm_tuning_parameters() -> dict:
         index_offset, learning_time_offset_hours, learning_time_gain_hours,
         gating_time_max_duration_minutes, std_initial, gain_factor
     ) < 0:
-        raise RuntimeError("Failed to get VOC algorithm tuning parameters")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_voc_algorithm_tuning_parameters_finish(
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ) < 0:
+        raise _error
     return {
         "index_offset": index_offset.value,
         "learning_time_offset_hours": learning_time_offset_hours.value,
@@ -264,9 +280,13 @@ async def set_voc_algorithm_tuning_parameters(
 
 
 async def get_voc_algorithm_state() -> bytes:
+    _error = RuntimeError("Failed to get VOC algorithm state")
     state = (c_uint8 * 12)()
     if libsen5x.sen5x_get_voc_algorithm_state(state, 12) < 0:
-        raise RuntimeError("Failed to get VOC algorithm state")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_voc_algorithm_state_finish(state, 12) < 0:
+        raise _error
     return bytes(state)
 
 
@@ -280,6 +300,7 @@ async def set_voc_algorithm_state(state: bytes) -> None:
 
 
 async def get_nox_algorithm_tuning_parameters() -> dict:
+    _error = RuntimeError("Failed to get NOx algorithm tuning parameters")
     index_offset = c_int16()
     learning_time_offset_hours = c_int16()
     learning_time_gain_hours = c_int16()
@@ -290,7 +311,13 @@ async def get_nox_algorithm_tuning_parameters() -> dict:
         index_offset, learning_time_offset_hours, learning_time_gain_hours,
         gating_time_max_duration_minutes, std_initial, gain_factor
     ) < 0:
-        raise RuntimeError("Failed to get NOx algorithm tuning parameters")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_nox_algorithm_tuning_parameters_finish(
+        index_offset, learning_time_offset_hours, learning_time_gain_hours,
+        gating_time_max_duration_minutes, std_initial, gain_factor
+    ) < 0:
+        raise _error
     return {
         "index_offset": index_offset.value,
         "learning_time_offset_hours": learning_time_offset_hours.value,

@@ -1,6 +1,6 @@
 [project]
 name = "sen5x"
-version = "0.1.0"
+version = "0.1.1"
 description = "Simple bindings for the SEN5x C library"
 readme = "README.md"
 authors = [{ name = "Marcin Cieślak", email = "marcin.k.cieslak@gmail.com" }]
