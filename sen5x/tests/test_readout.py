@@ -1,4 +1,5 @@
 import asyncio
+import math
 
 import sen5x
 import sen5x.sensor as sensor
@@ -45,6 +46,10 @@ async def test_readout():
     await sensor.start_measurement()
     while not await sensor.read_data_ready():
         await asyncio.sleep(0.1)
+    print("Waiting for an initial readout...")
+    while math.isnan(res := (await sensor.read_measured_pm_values())['mass_concentration_pm1p0']) or res == 0.0:
+        while not await sensor.read_data_ready():
+            await asyncio.sleep(0.2)
     results = await sensor.read_measured_values()
     pm_results = await sensor.read_measured_pm_values()
     print("Data ready!")
