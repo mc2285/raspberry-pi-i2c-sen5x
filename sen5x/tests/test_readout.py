@@ -33,10 +33,10 @@ async def test_readout():
     print(f"New fan cleaning interval: {await sensor.get_fan_auto_cleaning_interval()}")
 
     print("\nSetting RH/T adjustment...")
-    print(f"Current adjustment mode: {sensor.get_rh_t_acceleration_mode()}")
+    print(f"Current adjustment mode: {await sensor.get_rh_t_acceleration_mode()}")
     print(f"Setting to 2 (medium)...")
     await sensor.set_rh_t_acceleration_mode(2)
-    print(f"New adjustment mode: {sensor.get_rh_t_acceleration_mode()}")
+    print(f"New adjustment mode: {await sensor.get_rh_t_acceleration_mode()}")
 
     print("\n Starting no-pm measurement...")
     await sensor.start_measurement_without_pm()
@@ -70,9 +70,9 @@ async def test_readout():
     await sensor.stop_measurement()
 
     print(f"\nDumping algorithm parameters:")
-    print(f"VOc state: {sensor.get_voc_algorithm_state()}")
-    print(f"VOc params: {sensor.get_voc_algorithm_tuning_parameters()}")
-    print(f"NOx params: {sensor.get_nox_algorithm_tuning_parameters()}")
+    print(f"VOc state: {await sensor.get_voc_algorithm_state()}")
+    print(f"VOc params: {await sensor.get_voc_algorithm_tuning_parameters()}")
+    print(f"NOx params: {await sensor.get_nox_algorithm_tuning_parameters()}")
 
     print("\nTest complete!")
 
