@@ -13,20 +13,29 @@ async def device_reset() -> None:
 
 
 async def get_serial_number() -> str:
+    _error = RuntimeError("Failed to get serial number")
     buffer = (c_uint8 * 32)()
     if libsen5x.sen5x_get_serial_number(buffer, 32) < 0:
-        raise RuntimeError("Failed to get serial number")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_serial_number_finish(buffer, 32) < 0:
+        raise _error
     return bytes(buffer).rstrip(b'\x00').decode()
 
 
 async def get_product_name() -> str:
+    _error = RuntimeError("Failed to get product name")
     buffer = (c_uint8 * 32)()
     if libsen5x.sen5x_get_product_name(buffer, 32) < 0:
-        raise RuntimeError("Failed to get product name")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_product_name_finish(buffer, 32) < 0:
+        raise _error
     return bytes(buffer).rstrip(b'\x00').decode()
 
 
 async def get_version() -> str:
+    _error = RuntimeError("Failed to get version")
     fw_major = c_uint8()
     fw_minor = c_uint8()
     fw_debug = c_bool()
@@ -35,7 +44,10 @@ async def get_version() -> str:
     prt_major = c_uint8()
     prt_minor = c_uint8()
     if libsen5x.sen5x_get_version(fw_major, fw_minor, fw_debug, hw_major, hw_minor, prt_major, prt_minor) < 0:
-        raise RuntimeError("Failed to get version")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_version_finish(fw_major, fw_minor, fw_debug, hw_major, hw_minor, prt_major, prt_minor) < 0:
+        raise _error
     return (
         f"FW:{fw_major.value}.{fw_minor.value}{'-debug' if fw_debug.value else ''}"
         f" HW:{hw_major.value}.{hw_minor.value} PRT:{prt_major.value}.{prt_minor.value}"
@@ -43,16 +55,24 @@ async def get_version() -> str:
 
 
 async def read_device_status() -> int:
+    _error = RuntimeError("Failed to read device status")
     status = c_uint32()
-    if libsen5x.sen5x_read_and_clear_device_status(status) < 0:
-        raise RuntimeError("Failed to read device status")
+    if libsen5x.sen5x_read_device_status(status) < 0:
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_read_device_status_finish(status) < 0:
+        raise _error
     return status.value
 
 
 async def read_and_clear_device_status() -> int:
+    _error = RuntimeError("Failed to read and clear device status")
     status = c_uint32()
     if libsen5x.sen5x_read_and_clear_device_status(status) < 0:
-        raise RuntimeError("Failed to read and clear device status")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_read_and_clear_device_status_finish(status) < 0:
+        raise _error
     return status.value
 
 
@@ -86,9 +106,13 @@ async def start_fan_cleaning() -> None:
 
 
 async def get_fan_auto_cleaning_interval() -> int:
+    _error = RuntimeError("Failed to get fan auto cleaning interval")
     interval = c_uint32()
     if libsen5x.sen5x_get_fan_auto_cleaning_interval(interval) < 0:
-        raise RuntimeError("Failed to get fan auto cleaning interval")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_fan_auto_cleaning_interval_finish(interval) < 0:
+        raise _error
     return interval.value
 
 
@@ -101,16 +125,24 @@ async def set_fan_auto_cleaning_interval(interval: int) -> None:
 
 
 async def read_data_ready() -> bool:
+    _error = RuntimeError("Failed to read data ready status")
     ready = c_bool()
     if libsen5x.sen5x_read_data_ready(ready) < 0:
-        raise RuntimeError("Failed to read data ready status")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_read_data_ready_finish(ready) < 0:
+        raise _error
     return ready.value
 
 
 async def get_warm_start_parameter() -> bool:
+    _error = RuntimeError("Failed to get warm start parameter")
     param = c_uint16()
     if libsen5x.sen5x_get_warm_start_parameter(param) < 0:
-        raise RuntimeError("Failed to get warm start parameter")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_warm_start_parameter_finish(param) < 0:
+        raise _error
     return bool(param.value)
 
 
@@ -124,11 +156,15 @@ async def set_warm_start_parameter(param: bool) -> None:
 
 
 async def get_temperature_offset_parameters() -> dict:
+    _error = RuntimeError("Failed to get temperature offset parameters")
     offset = c_int16()
     gain = c_int16()
     scale = c_uint16()
     if libsen5x.sen5x_get_temperature_offset_parameters(offset, gain, scale) < 0:
-        raise RuntimeError("Failed to get temperature offset parameters")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_get_temperature_offset_parameters_finish(offset, gain, scale) < 0:
+        raise _error
     return {
         "offset": offset.value,
         "slope": gain.value,
@@ -290,6 +326,7 @@ async def set_nox_algorithm_tuning_parameters(
 
 
 async def read_measured_values() -> dict:
+    _error = RuntimeError("Failed to read measured values")
     mass_concentration_pm1p0 = c_float()
     mass_concentration_pm2p5 = c_float()
     mass_concentration_pm4p0 = c_float()
@@ -304,7 +341,14 @@ async def read_measured_values() -> dict:
         mass_concentration_pm4p0, mass_concentration_pm10p0,
         ambient_humidity, ambient_temperature, voc_index, nox_index
     ) < 0:
-        raise RuntimeError("Failed to read measured values")
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_read_measured_values_finish(
+        mass_concentration_pm1p0, mass_concentration_pm2p5,
+        mass_concentration_pm4p0, mass_concentration_pm10p0,
+        ambient_humidity, ambient_temperature, voc_index, nox_index
+    ) < 0:
+        raise _error
 
     return {
         "mass_concentration_pm1p0": mass_concentration_pm1p0.value,
@@ -315,4 +359,49 @@ async def read_measured_values() -> dict:
         "ambient_temperature": ambient_temperature.value,
         "voc_index": voc_index.value,
         "nox_index": nox_index.value
+    }
+
+
+async def read_measured_pm_values() -> dict:
+    _error = RuntimeError("Failed to read measured PM values")
+    mass_concentration_pm1p0 = c_float()
+    mass_concentration_pm2p5 = c_float()
+    mass_concentration_pm4p0 = c_float()
+    mass_concentration_pm10p0 = c_float()
+    number_concentration_pm0p5 = c_float()
+    number_concentration_pm1p0 = c_float()
+    number_concentration_pm2p5 = c_float()
+    number_concentration_pm4p0 = c_float()
+    number_concentration_pm10p0 = c_float()
+    typical_particle_size = c_float()
+
+    if libsen5x.sen5x_read_measured_pm_values(
+        mass_concentration_pm1p0, mass_concentration_pm2p5,
+        mass_concentration_pm4p0, mass_concentration_pm10p0,
+        number_concentration_pm0p5, number_concentration_pm1p0,
+        number_concentration_pm2p5, number_concentration_pm4p0,
+        number_concentration_pm10p0, typical_particle_size
+    ) < 0:
+        raise _error
+    await asyncio.sleep(0.02)  # <20ms
+    if libsen5x.sen5x_read_measured_pm_values_finish(
+        mass_concentration_pm1p0, mass_concentration_pm2p5,
+        mass_concentration_pm4p0, mass_concentration_pm10p0,
+        number_concentration_pm0p5, number_concentration_pm1p0,
+        number_concentration_pm2p5, number_concentration_pm4p0,
+        number_concentration_pm10p0, typical_particle_size
+    ) < 0:
+        raise _error
+
+    return {
+        "mass_concentration_pm1p0": mass_concentration_pm1p0.value,
+        "mass_concentration_pm2p5": mass_concentration_pm2p5.value,
+        "mass_concentration_pm4p0": mass_concentration_pm4p0.value,
+        "mass_concentration_pm10p0": mass_concentration_pm10p0.value,
+        "number_concentration_pm0p5": number_concentration_pm0p5.value,
+        "number_concentration_pm1p0": number_concentration_pm1p0.value,
+        "number_concentration_pm2p5": number_concentration_pm2p5.value,
+        "number_concentration_pm4p0": number_concentration_pm4p0.value,
+        "number_concentration_pm10p0": number_concentration_pm10p0.value,
+        "typical_particle_size": typical_particle_size.value
     }

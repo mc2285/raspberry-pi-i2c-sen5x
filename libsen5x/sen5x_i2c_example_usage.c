@@ -59,7 +59,7 @@ int main(void) {
     sensirion_i2c_hal_init(I2C_DEVICE_PATH);
 
     error = sen5x_device_reset();
-    sensirion_i2c_hal_sleep_usec(200000);
+    sensirion_i2c_hal_sleep_usec(100000);
     if (error) {
         printf("Error executing sen5x_device_reset(): %i\n", error);
     }
@@ -67,6 +67,8 @@ int main(void) {
     unsigned char serial_number[32];
     uint8_t serial_number_size = 32;
     error = sen5x_get_serial_number(serial_number, serial_number_size);
+    sensirion_i2c_hal_sleep_usec(20000);
+    error += sen5x_get_serial_number_finish(serial_number, serial_number_size);
     if (error) {
         printf("Error executing sen5x_get_serial_number(): %i\n", error);
     } else {
@@ -76,6 +78,8 @@ int main(void) {
     unsigned char product_name[32];
     uint8_t product_name_size = 32;
     error = sen5x_get_product_name(product_name, product_name_size);
+    sensirion_i2c_hal_sleep_usec(20000);
+    error += sen5x_get_product_name_finish(product_name, product_name_size);
     if (error) {
         printf("Error executing sen5x_get_product_name(): %i\n", error);
     } else {
@@ -92,6 +96,10 @@ int main(void) {
     error = sen5x_get_version(&firmware_major, &firmware_minor, &firmware_debug,
                               &hardware_major, &hardware_minor, &protocol_major,
                               &protocol_minor);
+    sensirion_i2c_hal_sleep_usec(20000);
+    error += sen5x_get_version_finish(
+        &firmware_major, &firmware_minor, &firmware_debug, &hardware_major,
+        &hardware_minor, &protocol_major, &protocol_minor);
     if (error) {
         printf("Error executing sen5x_get_version(): %i\n", error);
     } else {
@@ -148,6 +156,11 @@ int main(void) {
         float nox_index;
 
         error = sen5x_read_measured_values(
+            &mass_concentration_pm1p0, &mass_concentration_pm2p5,
+            &mass_concentration_pm4p0, &mass_concentration_pm10p0,
+            &ambient_humidity, &ambient_temperature, &voc_index, &nox_index);
+        sensirion_i2c_hal_sleep_usec(20000);
+        error += sen5x_read_measured_values_finish(
             &mass_concentration_pm1p0, &mass_concentration_pm2p5,
             &mass_concentration_pm4p0, &mass_concentration_pm10p0,
             &ambient_humidity, &ambient_temperature, &voc_index, &nox_index);

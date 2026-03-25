@@ -24,6 +24,9 @@ def _setup_ctypes() -> None:
     libsen5x.sen5x_get_fan_auto_cleaning_interval.argtypes = [
         POINTER(c_uint32)]
     libsen5x.sen5x_get_fan_auto_cleaning_interval.restype = c_int16
+    libsen5x.sen5x_get_fan_auto_cleaning_interval_finish.argtypes = [
+        POINTER(c_uint32)]
+    libsen5x.sen5x_get_fan_auto_cleaning_interval_finish.restype = c_int16
 
     libsen5x.sen5x_get_nox_algorithm_tuning_parameters.argtypes = [POINTER(c_int16), POINTER(
         c_int16), POINTER(c_int16), POINTER(c_int16), POINTER(c_int16), POINTER(c_int16)]
@@ -31,20 +34,32 @@ def _setup_ctypes() -> None:
 
     libsen5x.sen5x_get_product_name.argtypes = [POINTER(c_uint8), c_uint8]
     libsen5x.sen5x_get_product_name.restype = c_int16
+    libsen5x.sen5x_get_product_name_finish.argtypes = [
+        POINTER(c_uint8), c_uint8]
+    libsen5x.sen5x_get_product_name_finish.restype = c_int16
 
     libsen5x.sen5x_get_rht_acceleration_mode.argtypes = [POINTER(c_uint16)]
     libsen5x.sen5x_get_rht_acceleration_mode.restype = c_int16
 
     libsen5x.sen5x_get_serial_number.argtypes = [POINTER(c_uint8), c_uint8]
     libsen5x.sen5x_get_serial_number.restype = c_int16
+    libsen5x.sen5x_get_serial_number_finish.argtypes = [
+        POINTER(c_uint8), c_uint8]
+    libsen5x.sen5x_get_serial_number_finish.restype = c_int16
 
     libsen5x.sen5x_get_temperature_offset_parameters.argtypes = [
         POINTER(c_int16), POINTER(c_int16), POINTER(c_uint16)]
     libsen5x.sen5x_get_temperature_offset_parameters.restype = c_int16
+    libsen5x.sen5x_get_temperature_offset_parameters_finish.argtypes = [
+        POINTER(c_int16), POINTER(c_int16), POINTER(c_uint16)]
+    libsen5x.sen5x_get_temperature_offset_parameters_finish.restype = c_int16
 
     libsen5x.sen5x_get_version.argtypes = [POINTER(c_uint8), POINTER(c_uint8), POINTER(
         c_bool), POINTER(c_uint8), POINTER(c_uint8), POINTER(c_uint8), POINTER(c_uint8)]
     libsen5x.sen5x_get_version.restype = c_int16
+    libsen5x.sen5x_get_version_finish.argtypes = [POINTER(c_uint8), POINTER(c_uint8), POINTER(
+        c_bool), POINTER(c_uint8), POINTER(c_uint8), POINTER(c_uint8), POINTER(c_uint8)]
+    libsen5x.sen5x_get_version_finish.restype = c_int16
 
     libsen5x.sen5x_get_voc_algorithm_state.argtypes = [
         POINTER(c_uint8), c_uint8]
@@ -56,35 +71,39 @@ def _setup_ctypes() -> None:
 
     libsen5x.sen5x_get_warm_start_parameter.argtypes = [POINTER(c_uint16)]
     libsen5x.sen5x_get_warm_start_parameter.restype = c_int16
+    libsen5x.sen5x_get_warm_start_parameter_finish.argtypes = [
+        POINTER(c_uint16)]
+    libsen5x.sen5x_get_warm_start_parameter_finish.restype = c_int16
 
     libsen5x.sen5x_read_and_clear_device_status.argtypes = [POINTER(c_uint32)]
     libsen5x.sen5x_read_and_clear_device_status.restype = c_int16
+    libsen5x.sen5x_read_and_clear_device_status_finish.argtypes = [
+        POINTER(c_uint32)]
+    libsen5x.sen5x_read_and_clear_device_status_finish.restype = c_int16
 
     libsen5x.sen5x_read_device_status.argtypes = [POINTER(c_uint32)]
     libsen5x.sen5x_read_device_status.restype = c_int16
+    libsen5x.sen5x_read_device_status_finish.argtypes = [POINTER(c_uint32)]
+    libsen5x.sen5x_read_device_status_finish.restype = c_int16
 
     libsen5x.sen5x_read_data_ready.argtypes = [POINTER(c_bool)]
     libsen5x.sen5x_read_data_ready.restype = c_int16
+    libsen5x.sen5x_read_data_ready_finish.argtypes = [POINTER(c_bool)]
+    libsen5x.sen5x_read_data_ready_finish.restype = c_int16
 
     libsen5x.sen5x_read_measured_pm_values.argtypes = [POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(
         c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float)]
     libsen5x.sen5x_read_measured_pm_values.restype = c_int16
-
-    libsen5x.sen5x_read_measured_pm_values_as_integers.argtypes = [POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(
-        c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16), POINTER(c_uint16)]
-    libsen5x.sen5x_read_measured_pm_values_as_integers.restype = c_int16
+    libsen5x.sen5x_read_measured_pm_values_finish.argtypes = [POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(
+        c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float)]
+    libsen5x.sen5x_read_measured_pm_values_finish.restype = c_int16
 
     libsen5x.sen5x_read_measured_values.argtypes = [POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(
         c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float)]
     libsen5x.sen5x_read_measured_values.restype = c_int16
-
-    libsen5x.sen5x_read_measured_values_as_integers.argtypes = [POINTER(c_uint16), POINTER(c_uint16), POINTER(
-        c_uint16), POINTER(c_uint16), POINTER(c_int16), POINTER(c_int16), POINTER(c_int16), POINTER(c_int16)]
-    libsen5x.sen5x_read_measured_values_as_integers.restype = c_int16
-
-    libsen5x.sen5x_read_measured_values_sen50.argtypes = [POINTER(c_float), POINTER(
-        c_float), POINTER(c_float), POINTER(c_float)]
-    libsen5x.sen5x_read_measured_values_sen50.restype = c_int16
+    libsen5x.sen5x_read_measured_values_finish.argtypes = [POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float), POINTER(
+        c_float), POINTER(c_float), POINTER(c_float), POINTER(c_float)]
+    libsen5x.sen5x_read_measured_values_finish.restype = c_int16
 
     libsen5x.sen5x_set_fan_auto_cleaning_interval.argtypes = [c_uint32]
     libsen5x.sen5x_set_fan_auto_cleaning_interval.restype = c_int16

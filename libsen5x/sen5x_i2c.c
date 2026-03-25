@@ -102,8 +102,22 @@ int16_t sen5x_read_data_ready(bool* data_ready) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0],
+    // 2); if (error) {
+    //     return error;
+    // }
+    // *data_ready = buffer[1];
+    // return NO_ERROR;
+}
 
+int16_t sen5x_read_data_ready_finish(bool* data_ready) {
+    int16_t error;
+    uint8_t buffer[3];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 2);
     if (error) {
         return error;
@@ -121,6 +135,66 @@ int16_t sen5x_read_measured_values(float* mass_concentration_pm1p0,
                                    float* nox_index) {
     int16_t error;
 
+    uint16_t mass_concentration_pm1p0_int_dummy;
+    uint16_t mass_concentration_pm2p5_int_dummy;
+    uint16_t mass_concentration_pm4p0_int_dummy;
+    uint16_t mass_concentration_pm10p0_int_dummy;
+    int16_t ambient_humidity_int_dummy;
+    int16_t ambient_temperature_int_dummy;
+    int16_t voc_index_int_dummy;
+    int16_t nox_index_int_dummy;
+
+    error = sen5x_read_measured_values_as_integers(
+        &mass_concentration_pm1p0_int_dummy,
+        &mass_concentration_pm2p5_int_dummy,
+        &mass_concentration_pm4p0_int_dummy,
+        &mass_concentration_pm10p0_int_dummy, &ambient_humidity_int_dummy,
+        &ambient_temperature_int_dummy, &voc_index_int_dummy,
+        &nox_index_int_dummy);
+
+    return error;
+    // *mass_concentration_pm1p0 = mass_concentration_pm1p0_int ==
+    // UINT_INVALID
+    //                                 ? NAN
+    //                                 : mass_concentration_pm1p0_int
+    //                                 / 10.0f;
+    // *mass_concentration_pm2p5 = mass_concentration_pm2p5_int ==
+    // UINT_INVALID
+    //                                 ? NAN
+    //                                 : mass_concentration_pm2p5_int
+    //                                 / 10.0f;
+    // *mass_concentration_pm4p0 = mass_concentration_pm4p0_int ==
+    // UINT_INVALID
+    //                                 ? NAN
+    //                                 : mass_concentration_pm4p0_int
+    //                                 / 10.0f;
+    // *mass_concentration_pm10p0 = mass_concentration_pm10p0_int ==
+    // UINT_INVALID
+    //                                  ? NAN
+    //                                  : mass_concentration_pm10p0_int
+    //                                  / 10.0f;
+    // *ambient_humidity = ambient_humidity_int == INT_INVALID
+    //                         ? NAN
+    //                         : ambient_humidity_int / 100.0f;
+    // *ambient_temperature = ambient_temperature_int == INT_INVALID
+    //                            ? NAN
+    //                            : ambient_temperature_int / 200.0f;
+    // *voc_index = voc_index_int == INT_INVALID ? NAN : voc_index_int
+    // / 10.0f; *nox_index = nox_index_int == INT_INVALID ? NAN :
+    // nox_index_int / 10.0f;
+
+    // return NO_ERROR;
+}
+
+int16_t sen5x_read_measured_values_finish(float* mass_concentration_pm1p0,
+                                          float* mass_concentration_pm2p5,
+                                          float* mass_concentration_pm4p0,
+                                          float* mass_concentration_pm10p0,
+                                          float* ambient_humidity,
+                                          float* ambient_temperature,
+                                          float* voc_index, float* nox_index) {
+
+    int16_t error;
     uint16_t mass_concentration_pm1p0_int;
     uint16_t mass_concentration_pm2p5_int;
     uint16_t mass_concentration_pm4p0_int;
@@ -130,7 +204,7 @@ int16_t sen5x_read_measured_values(float* mass_concentration_pm1p0,
     int16_t voc_index_int;
     int16_t nox_index_int;
 
-    error = sen5x_read_measured_values_as_integers(
+    error = sen5x_read_measured_values_as_integers_finish(
         &mass_concentration_pm1p0_int, &mass_concentration_pm2p5_int,
         &mass_concentration_pm4p0_int, &mass_concentration_pm10p0_int,
         &ambient_humidity_int, &ambient_temperature_int, &voc_index_int,
@@ -179,8 +253,37 @@ int16_t sen5x_read_measured_values_as_integers(
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    //    Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 16); if (error) {
+    //     return error;
+    // }
+    // *mass_concentration_pm1p0 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[0]);
+    // *mass_concentration_pm2p5 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[2]);
+    // *mass_concentration_pm4p0 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[4]);
+    // *mass_concentration_pm10p0 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[6]); *ambient_humidity =
+    // sensirion_common_bytes_to_int16_t(&buffer[8]); *ambient_temperature =
+    // sensirion_common_bytes_to_int16_t(&buffer[10]); *voc_index =
+    // sensirion_common_bytes_to_int16_t(&buffer[12]); *nox_index =
+    // sensirion_common_bytes_to_int16_t(&buffer[14]); return NO_ERROR;
+}
 
+int16_t sen5x_read_measured_values_as_integers_finish(
+    uint16_t* mass_concentration_pm1p0, uint16_t* mass_concentration_pm2p5,
+    uint16_t* mass_concentration_pm4p0, uint16_t* mass_concentration_pm10p0,
+    int16_t* ambient_humidity, int16_t* ambient_temperature, int16_t* voc_index,
+    int16_t* nox_index) {
+
+    int16_t error;
+    uint8_t buffer[24];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 16);
     if (error) {
         return error;
@@ -209,8 +312,28 @@ int16_t sen5x_read_measured_raw_values(int16_t* raw_humidity,
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 8); if (error) {
+    //     return error;
+    // }
+    // *raw_humidity = sensirion_common_bytes_to_int16_t(&buffer[0]);
+    // *raw_temperature = sensirion_common_bytes_to_int16_t(&buffer[2]);
+    // *raw_voc = sensirion_common_bytes_to_uint16_t(&buffer[4]);
+    // *raw_nox = sensirion_common_bytes_to_uint16_t(&buffer[6]);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_read_measured_raw_values_finish(int16_t* raw_humidity,
+                                              int16_t* raw_temperature,
+                                              uint16_t* raw_voc,
+                                              uint16_t* raw_nox) {
+    int16_t error;
+    uint8_t buffer[12];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 8);
     if (error) {
         return error;
@@ -250,6 +373,90 @@ int16_t sen5x_read_measured_pm_values(
 
     int16_t error;
 
+    uint16_t mass_concentration_pm1p0_int_dummy;
+    uint16_t mass_concentration_pm2p5_int_dummy;
+    uint16_t mass_concentration_pm4p0_int_dummy;
+    uint16_t mass_concentration_pm10p0_int_dummy;
+    uint16_t number_concentration_pm0p5_int_dummy;
+    uint16_t number_concentration_pm1p0_int_dummy;
+    uint16_t number_concentration_pm2p5_int_dummy;
+    uint16_t number_concentration_pm4p0_int_dummy;
+    uint16_t number_concentration_pm10p0_int_dummy;
+    uint16_t typical_particle_size_int_dummy;
+
+    error = sen5x_read_measured_pm_values_as_integers(
+        &mass_concentration_pm1p0_int_dummy,
+        &mass_concentration_pm2p5_int_dummy,
+        &mass_concentration_pm4p0_int_dummy,
+        &mass_concentration_pm10p0_int_dummy,
+        &number_concentration_pm0p5_int_dummy,
+        &number_concentration_pm1p0_int_dummy,
+        &number_concentration_pm2p5_int_dummy,
+        &number_concentration_pm4p0_int_dummy,
+        &number_concentration_pm10p0_int_dummy,
+        &typical_particle_size_int_dummy);
+
+    return error;
+    // *mass_concentration_pm1p0 = mass_concentration_pm1p0_int ==
+    // UINT_INVALID
+    //                                 ? NAN
+    //                                 : mass_concentration_pm1p0_int
+    //                                 / 10.0f;
+    // *mass_concentration_pm2p5 = mass_concentration_pm2p5_int ==
+    // UINT_INVALID
+    //                                 ? NAN
+    //                                 : mass_concentration_pm2p5_int
+    //                                 / 10.0f;
+    // *mass_concentration_pm4p0 = mass_concentration_pm4p0_int ==
+    // UINT_INVALID
+    //                                 ? NAN
+    //                                 : mass_concentration_pm4p0_int
+    //                                 / 10.0f;
+    // *mass_concentration_pm10p0 = mass_concentration_pm10p0_int ==
+    // UINT_INVALID
+    //                                  ? NAN
+    //                                  : mass_concentration_pm10p0_int
+    //                                  / 10.0f;
+    // *number_concentration_pm0p5 = number_concentration_pm0p5_int ==
+    // UINT_INVALID
+    //                                   ? NAN
+    //                                   : number_concentration_pm0p5_int
+    //                                   / 10.0f;
+    // *number_concentration_pm1p0 = number_concentration_pm1p0_int ==
+    // UINT_INVALID
+    //                                   ? NAN
+    //                                   : number_concentration_pm1p0_int
+    //                                   / 10.0f;
+    // *number_concentration_pm2p5 = number_concentration_pm2p5_int ==
+    // UINT_INVALID
+    //                                   ? NAN
+    //                                   : number_concentration_pm2p5_int
+    //                                   / 10.0f;
+    // *number_concentration_pm4p0 = number_concentration_pm4p0_int ==
+    // UINT_INVALID
+    //                                   ? NAN
+    //                                   : number_concentration_pm4p0_int
+    //                                   / 10.0f;
+    // *number_concentration_pm10p0 =
+    //     number_concentration_pm10p0_int == UINT_INVALID
+    //         ? NAN
+    //         : number_concentration_pm10p0_int / 10.0f;
+    // *typical_particle_size = typical_particle_size_int == UINT_INVALID
+    //                              ? NAN
+    //                              : typical_particle_size_int / 1000.0f;
+
+    // return NO_ERROR;
+}
+
+int16_t sen5x_read_measured_pm_values_finish(
+    float* mass_concentration_pm1p0, float* mass_concentration_pm2p5,
+    float* mass_concentration_pm4p0, float* mass_concentration_pm10p0,
+    float* number_concentration_pm0p5, float* number_concentration_pm1p0,
+    float* number_concentration_pm2p5, float* number_concentration_pm4p0,
+    float* number_concentration_pm10p0, float* typical_particle_size) {
+
+    int16_t error;
+
     uint16_t mass_concentration_pm1p0_int;
     uint16_t mass_concentration_pm2p5_int;
     uint16_t mass_concentration_pm4p0_int;
@@ -261,7 +468,7 @@ int16_t sen5x_read_measured_pm_values(
     uint16_t number_concentration_pm10p0_int;
     uint16_t typical_particle_size_int;
 
-    error = sen5x_read_measured_pm_values_as_integers(
+    error = sen5x_read_measured_pm_values_as_integers_finish(
         &mass_concentration_pm1p0_int, &mass_concentration_pm2p5_int,
         &mass_concentration_pm4p0_int, &mass_concentration_pm10p0_int,
         &number_concentration_pm0p5_int, &number_concentration_pm1p0_int,
@@ -323,8 +530,46 @@ int16_t sen5x_read_measured_pm_values_as_integers(
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 20); if (error) {
+    //     return error;
+    // }
+    // *mass_concentration_pm1p0 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[0]);
+    // *mass_concentration_pm2p5 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[2]);
+    // *mass_concentration_pm4p0 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[4]);
+    // *mass_concentration_pm10p0 =
+    // sensirion_common_bytes_to_uint16_t(&buffer[6]);
+    // *number_concentration_pm0p5 =
+    //     sensirion_common_bytes_to_uint16_t(&buffer[8]);
+    // *number_concentration_pm1p0 =
+    //     sensirion_common_bytes_to_uint16_t(&buffer[10]);
+    // *number_concentration_pm2p5 =
+    //     sensirion_common_bytes_to_uint16_t(&buffer[12]);
+    // *number_concentration_pm4p0 =
+    //     sensirion_common_bytes_to_uint16_t(&buffer[14]);
+    // *number_concentration_pm10p0 =
+    //     sensirion_common_bytes_to_uint16_t(&buffer[16]);
+    // *typical_particle_size =
+    // sensirion_common_bytes_to_uint16_t(&buffer[18]); return NO_ERROR;
+}
 
+int16_t sen5x_read_measured_pm_values_as_integers_finish(
+    uint16_t* mass_concentration_pm1p0, uint16_t* mass_concentration_pm2p5,
+    uint16_t* mass_concentration_pm4p0, uint16_t* mass_concentration_pm10p0,
+    uint16_t* number_concentration_pm0p5, uint16_t* number_concentration_pm1p0,
+    uint16_t* number_concentration_pm2p5, uint16_t* number_concentration_pm4p0,
+    uint16_t* number_concentration_pm10p0, uint16_t* typical_particle_size) {
+
+    int16_t error;
+    uint8_t buffer[30];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 20);
     if (error) {
         return error;
@@ -421,8 +666,25 @@ int16_t sen5x_get_temperature_offset_parameters(int16_t* temp_offset,
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0],
+    // 6); if (error) {
+    //     return error;
+    // }
+    // *temp_offset = sensirion_common_bytes_to_int16_t(&buffer[0]);
+    // *slope = sensirion_common_bytes_to_int16_t(&buffer[2]);
+    // *time_constant = sensirion_common_bytes_to_uint16_t(&buffer[4]);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_temperature_offset_parameters_finish(
+    int16_t* temp_offset, int16_t* slope, uint16_t* time_constant) {
+    int16_t error;
+    uint8_t buffer[9];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 6);
     if (error) {
         return error;
@@ -461,8 +723,22 @@ int16_t sen5x_get_warm_start_parameter(uint16_t* warm_start) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0],
+    // 2); if (error) {
+    //     return error;
+    // }
+    // *warm_start = sensirion_common_bytes_to_uint16_t(&buffer[0]);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_warm_start_parameter_finish(uint16_t* warm_start) {
+    int16_t error;
+    uint8_t buffer[3];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 2);
     if (error) {
         return error;
@@ -694,8 +970,22 @@ int16_t sen5x_get_fan_auto_cleaning_interval(uint32_t* interval) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 4); if (error) {
+    //     return error;
+    // }
+    // *interval = sensirion_common_bytes_to_uint32_t(&buffer[0]);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_fan_auto_cleaning_interval_finish(uint32_t* interval) {
+    int16_t error;
+    uint8_t buffer[6];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 4);
     if (error) {
         return error;
@@ -716,8 +1006,23 @@ int16_t sen5x_get_product_name(uint8_t* product_name,
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(50000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(50000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 32); if (error) {
+    //     return error;
+    // }
+    // memcpy(product_name, &buffer[0], product_name_size);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_product_name_finish(uint8_t* product_name,
+                                      uint8_t product_name_size) {
+    int16_t error;
+    uint8_t buffer[48];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 32);
     if (error) {
         return error;
@@ -738,8 +1043,23 @@ int16_t sen5x_get_serial_number(uint8_t* serial_number,
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(50000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(50000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 32); if (error) {
+    //     return error;
+    // }
+    // memcpy(serial_number, &buffer[0], serial_number_size);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_serial_number_finish(uint8_t* serial_number,
+                                       uint8_t serial_number_size) {
+    int16_t error;
+    uint8_t buffer[48];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 32);
     if (error) {
         return error;
@@ -762,8 +1082,33 @@ int16_t sen5x_get_version(uint8_t* firmware_major, uint8_t* firmware_minor,
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 8); if (error) {
+    //     return error;
+    // }
+    // *firmware_major = buffer[0];
+    // *firmware_minor = buffer[1];
+    // *firmware_debug = buffer[2];
+    // *hardware_major = buffer[3];
+    // *hardware_minor = buffer[4];
+    // *protocol_major = buffer[5];
+    // *protocol_minor = buffer[6];
+    // return NO_ERROR;
+}
 
+int16_t sen5x_get_version_finish(uint8_t* firmware_major,
+                                 uint8_t* firmware_minor, bool* firmware_debug,
+                                 uint8_t* hardware_major,
+                                 uint8_t* hardware_minor,
+                                 uint8_t* protocol_major,
+                                 uint8_t* protocol_minor) {
+    int16_t error;
+    uint8_t buffer[12];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 8);
     if (error) {
         return error;
@@ -789,7 +1134,22 @@ int16_t sen5x_read_device_status(uint32_t* device_status) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 4); if (error) {
+    //     return error;
+    // }
+    // *device_status = sensirion_common_bytes_to_uint32_t(&buffer[0]);
+    // return NO_ERROR;
+}
+
+int16_t sen5x_read_device_status_finish(uint32_t* device_status) {
+    int16_t error;
+    uint8_t buffer[6];
 
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 4);
     if (error) {
@@ -810,8 +1170,22 @@ int16_t sen5x_read_and_clear_device_status(uint32_t* device_status) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(20000);
+    return NO_ERROR;
+    // Moved to _finish()
+    //
+    // sensirion_i2c_hal_sleep_usec(20000);
+    //
+    // error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS,
+    // &buffer[0], 4); if (error) {
+    //     return error;
+    // }
+    // *device_status = sensirion_common_bytes_to_uint32_t(&buffer[0]);
+    // return NO_ERROR;
+}
 
+int16_t sen5x_read_and_clear_device_status_finish(uint32_t* device_status) {
+    int16_t error;
+    uint8_t buffer[6];
     error = sensirion_i2c_read_data_inplace(SEN5X_I2C_ADDRESS, &buffer[0], 4);
     if (error) {
         return error;
