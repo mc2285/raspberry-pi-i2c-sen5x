@@ -127,6 +127,7 @@ int main(void) {
     // exceeding the SEN module's self heating.
     float temp_offset = 0.0f;
     error = sen5x_set_temperature_offset_simple(temp_offset);
+    sensirion_i2c_hal_sleep_usec(20000);
     if (error) {
         printf("Error executing sen5x_set_temperature_offset_simple(): %i\n",
                error);
@@ -137,6 +138,7 @@ int main(void) {
 
     // Start Measurement
     error = sen5x_start_measurement();
+    sensirion_i2c_hal_sleep_usec(50000);
 
     if (error) {
         printf("Error executing sen5x_start_measurement(): %i\n", error);
