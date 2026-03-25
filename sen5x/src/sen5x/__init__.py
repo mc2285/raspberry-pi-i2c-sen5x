@@ -43,7 +43,8 @@ def _setup_ctypes() -> None:
 
     libsen5x.sen5x_get_rht_acceleration_mode.argtypes = [POINTER(c_uint16)]
     libsen5x.sen5x_get_rht_acceleration_mode.restype = c_int16
-    libsen5x.sen5x_get_rht_acceleration_mode_finish.argtypes = [c_uint16]
+    libsen5x.sen5x_get_rht_acceleration_mode_finish.argtypes = [
+        POINTER(c_uint16)]
     libsen5x.sen5x_get_rht_acceleration_mode_finish.restype = c_int16
 
     libsen5x.sen5x_get_serial_number.argtypes = [POINTER(c_uint8), c_uint8]
