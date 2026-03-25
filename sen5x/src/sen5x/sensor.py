@@ -117,6 +117,9 @@ async def get_fan_auto_cleaning_interval() -> int:
 
 
 async def set_fan_auto_cleaning_interval(interval: int) -> None:
+    """
+    @param interval: time in seconds
+    """
     if interval < 0 or interval > 0xFFFFFFFF:
         raise ValueError("Interval must fit in uint32")
     if libsen5x.sen5x_set_fan_auto_cleaning_interval(interval) < 0:
